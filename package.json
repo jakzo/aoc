@@ -1,0 +1,31 @@
+{
+  "name": "@jakzo/aoc",
+  "description": "CLI for reading, running and submitting Advent of Code challenges.",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "bin": {
+    "aoc": "dist/bin.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node ./src/bin.ts"
+  },
+  "dependencies": {
+    "axios": "^0.21.0",
+    "chalk": "^4.1.0",
+    "cheerio": "^1.0.0-rc.3",
+    "cli-html": "^1.8.2",
+    "date-fns": "^2.16.1",
+    "inquirer": "^7.3.3",
+    "keytar": "^7.2.0",
+    "yargs": "^16.1.1"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.22",
+    "@types/inquirer": "^7.3.1",
+    "@types/yargs": "^15.0.11",
+    "ts-node": "^9.1.0",
+    "typescript": "^4.1.2"
+  }
+}
