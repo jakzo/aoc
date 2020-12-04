@@ -3,7 +3,7 @@ import yargs from 'yargs'
 import inquirer from 'inquirer'
 import chalk from 'chalk'
 
-import { countdownToStart, main, printDescription, submit } from './commands'
+import { countdownToStart, getInput, main, printDescription, submit } from './commands'
 
 const readStdin = async () => {
   const chunks = []
@@ -62,20 +62,20 @@ yargs
     'Prints the description of a challenge',
     yargs =>
       yargs
-        .option('part', {
-          alias: 'p',
+        .option('year', {
+          alias: 'y',
           type: 'number',
-          description: 'The part number of the challenge (eg. 1 or 2)',
+          description: 'The year of the challenge',
         })
         .option('day', {
           alias: 'd',
           type: 'number',
           description: 'The day of the challenge',
         })
-        .option('year', {
-          alias: 'y',
+        .option('part', {
+          alias: 'p',
           type: 'number',
-          description: 'The year of the challenge',
+          description: 'The part number of the challenge (eg. 1 or 2)',
         })
         .example([
           [
@@ -90,24 +90,47 @@ yargs
     cliHandler(async args => printDescription(args.year, args.day, args.part)),
   )
   .command(
-    'submit [answer]',
-    'Submits an answer to a challenge',
+    'input',
+    'Prints the input to a challenge',
     yargs =>
       yargs
-        .option('part', {
-          alias: 'p',
+        .option('year', {
+          alias: 'y',
           type: 'number',
-          description: 'The part number to submit (eg. 1 or 2)',
+          description: 'The year of the challenge',
         })
         .option('day', {
           alias: 'd',
           type: 'number',
           description: 'The day of the challenge',
         })
+        .example([
+          ['$0 input', "Print the input to today's challenge"],
+          ['$0 input --year 2019 --day 3', 'Print the input to a specific challenge'],
+        ]),
+    cliHandler(async args => {
+      console.log(await getInput(args.year, args.day))
+    }),
+  )
+  .command(
+    'submit [answer]',
+    'Submits an answer to a challenge',
+    yargs =>
+      yargs
         .option('year', {
           alias: 'y',
           type: 'number',
           description: 'The year of the challenge',
+        })
+        .option('day', {
+          alias: 'd',
+          type: 'number',
+          description: 'The day of the challenge',
+        })
+        .option('part', {
+          alias: 'p',
+          type: 'number',
+          description: 'The part number to submit (eg. 1 or 2)',
         })
         .positional('answer', {
           type: 'string',
@@ -124,7 +147,11 @@ yargs
       const answer =
         args.answer ||
         (await readStdin()) ||
-        (await inquirer.prompt({ message: 'Enter your answer:' }))
+        (
+          await inquirer.prompt<{ answer: string }>([
+            { name: 'answer', message: 'Enter your answer:' },
+          ])
+        ).answer
       await submit(args.part, answer.trim(), args.day, args.year)
     }),
   )

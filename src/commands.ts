@@ -50,8 +50,8 @@ export const countdownToStart = async (
   })
 
 export const getInput = async (
-  day = getCurrentDay(),
   year = getCurrentYear(),
+  day = getCurrentDay(),
   account?: string,
 ) => {
   validateDayAndYear(day, year)
