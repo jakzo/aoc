@@ -3,7 +3,19 @@ import yargs from 'yargs'
 import inquirer from 'inquirer'
 import chalk from 'chalk'
 
-import { countdownToStart, getInput, main, printDescription, submit } from './commands'
+import {
+  copyTemplates,
+  countdownToStart,
+  getInput,
+  loginPrompt,
+  main,
+  printDescription,
+  privateLeaderboardTimesToCsv,
+  start,
+  submit,
+} from './commands'
+import { normalizeTemplate } from './utils'
+import { AocTemplate, AocTemplateBuiltin, builtinTemplates } from './templates'
 
 const readStdin = async () => {
   const chunks = []
@@ -17,7 +29,6 @@ const cliHandler = <T>(fn: (args: T) => Promise<void>) => async (args: T) => {
   } catch (err) {
     console.error(chalk.red(String(err)))
     const isDebug = process.argv[1]?.endsWith('/bin.ts')
-    console.log(isDebug, process.argv)
     if (isDebug) console.error(err)
     process.exit(1)
   }
@@ -28,9 +39,39 @@ yargs
   .epilog('Reads, runs and submits Advent of Code challenges')
   .command(
     '*',
-    'Starts the full AoC dev loop for the next challenge from your terminal',
-    yargs => yargs,
-    cliHandler(async () => main()),
+    'Counts down, saves input, prints description and prompts for answers to the upcoming challenge',
+    yargs =>
+      yargs
+        .option('year', {
+          alias: 'y',
+          type: 'number',
+          description: 'The year of the challenge',
+        })
+        .option('day', {
+          alias: 'd',
+          type: 'number',
+          description: 'The day of the challenge',
+        }),
+    cliHandler(async args => main(args.year, args.day)),
+  )
+  .command(
+    'start [language]',
+    'Creates and run files from a template for a language (does not overwrite)',
+    yargs =>
+      yargs
+        .positional('language', {
+          type: 'string',
+          choices: Object.keys(builtinTemplates),
+          description: 'Name of built-in language template',
+        })
+        .option('day', {
+          alias: 'd',
+          type: 'number',
+          description: 'The day of the challenge',
+        }),
+    cliHandler(async args => {
+      await start(args.language as AocTemplate, args.day)
+    }),
   )
   .command(
     'login <token>',
@@ -40,7 +81,36 @@ yargs
         type: 'string',
         description: 'Session token (use dev tools to find `session` cookie)',
       }),
-    cliHandler(async () => main()),
+    cliHandler(async () => loginPrompt()),
+  )
+  .command(
+    'template <output>',
+    'Copies a template folder (does not overwrite)',
+    yargs =>
+      yargs
+        .positional('output', {
+          type: 'string',
+          description: 'Path to the directory to create and fill with the template contents',
+        })
+        .option('template', {
+          alias: 't',
+          type: 'string',
+          description: 'Path to the template directory',
+        })
+        .option('language', {
+          alias: 'l',
+          type: 'string',
+          choices: Object.keys(builtinTemplates),
+          description: 'Name of built-in language template',
+        }),
+    cliHandler(async args =>
+      copyTemplates(
+        args.output,
+        args.template
+          ? args.template
+          : normalizeTemplate((args.language as AocTemplateBuiltin) || 'js').path,
+      ),
+    ),
   )
   .command(
     'countdown',
@@ -153,6 +223,27 @@ yargs
           ])
         ).answer
       await submit(args.part, answer.trim(), args.day, args.year)
+    }),
+  )
+  .command(
+    'leaderboard <id>',
+    'Outputs a CSV of times to completion for a private leaderboard',
+    yargs =>
+      yargs
+        .option('year', {
+          alias: 'y',
+          type: 'number',
+          description: 'The year of the times to output',
+        })
+        .positional('id', {
+          type: 'string',
+          description: 'Private leaderboard ID (find it in the URL)',
+        }),
+    cliHandler(async args => {
+      const csv = await privateLeaderboardTimesToCsv(args.id, args.year)
+      for (const line of csv) {
+        console.log(line.join(','))
+      }
     }),
   )
   .alias('h', 'help')

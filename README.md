@@ -16,7 +16,7 @@ First make sure Node.js is installed then install this tool with:
 npm i -g @jakzo/aoc
 ```
 
-Then a few minutes before the challenge starts, run it with:
+Then a few minutes before the challenge starts, open two terminals and run this in both:
 
 ```sh
 aoc
@@ -24,15 +24,18 @@ aoc
 
 This will prompt you for your session token if you haven't provided it before.
 
-From here it will:
+From here the first terminal will:
 
-- Create a new source file with the test harness setup for the next challenge
 - Count down until the challenge starts
 - Print the description in the terminal once the challenge starts
 - Download the input to a local file
+- When a correct answer is submitted, repeat the last two steps for part 2
+
+And the second terminal will:
+
+- Create a new source file with the test harness setup for the next challenge
 - Run the test harness and rerun on changes
 - After each run allow selecting a line from the output to submit
-- If the answer was correct, print the description of part 2 and repeat
 
 ## Individual Commands
 

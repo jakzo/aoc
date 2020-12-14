@@ -1,6 +1,10 @@
 import keytar from 'keytar'
 import inquirer from 'inquirer'
 import axios from 'axios'
+import path from 'path'
+import cliHtml from 'cli-html'
+
+import { AocTemplate, AocTemplateNormalized, builtinTemplates } from './templates'
 
 export const KEYTAR_SERVICE_NAME = 'advent-of-code'
 export const DEFAULT_ACCOUNT = '_default'
@@ -8,6 +12,10 @@ const BASE_URL = 'https://adventofcode.com'
 const BACKOFF_RATE = 1.1
 const BACKOFF_INITIAL = 1000
 const BACKOFF_MAX = 30000
+
+export const logHtml = html => {
+  console.log(cliHtml(html).replace(/\n+$/, ''))
+}
 
 export const getCurrentDay = () => {
   const now = new Date()
@@ -65,9 +73,15 @@ export const getSessionToken = async (account = DEFAULT_ACCOUNT, verifyToken = f
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
+export const padZero = (n: number, length = 2) => `${n}`.padStart(length, '0')
+
+export const formUrlEncoded = (data: Record<string, string>) =>
+  Object.entries(data)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+    .join('&')
+
 /** Makes a request and retries quickly on 5XX. After some time of failure it will wait longer to retry. */
-export const makeRequest = async (url: string, token: string, formData?: FormData) => {
-  const startTime = Date.now()
+export const makeRequest = async (url: string, token: string, data?: Record<string, string>) => {
   let timeOfLastRequest = 0
   let currentWait = BACKOFF_INITIAL
   while (true) {
@@ -75,23 +89,31 @@ export const makeRequest = async (url: string, token: string, formData?: FormDat
     if (timeSinceLastRequest < currentWait) await sleep(currentWait - timeSinceLastRequest)
     currentWait = Math.min(currentWait * BACKOFF_RATE, BACKOFF_MAX)
 
-    const res = await axios({
-      url: `${BASE_URL}${url}`,
-      method: formData ? 'POST' : 'GET',
-      headers: {
-        ...(formData ? { 'Content-Type': 'multipart/form-data' } : undefined),
-        ...(token ? { cookie: `session=${token}` } : undefined),
-      },
-      timeout: 15000,
-      data: formData,
-    })
+    let res: any
+    try {
+      res = await axios({
+        url: `${BASE_URL}${url}`,
+        method: data ? 'POST' : 'GET',
+        headers: {
+          ...(data ? { 'Content-Type': 'application/x-www-form-urlencoded' } : undefined),
+          ...(token ? { cookie: `session=${token}` } : undefined),
+        },
+        responseType: 'arraybuffer',
+        timeout: Math.max(5000, currentWait),
+        data: data ? formUrlEncoded(data) : undefined,
+      })
+    } catch (err) {
+      console.warn(`Request failed and will retry: ${err}`)
+    }
+
     if (res.status >= 500) {
       console.warn(`Request failed with code ${res.status}. Retrying...`)
       continue
     }
     // TODO: Prompt for session token if it's an auth error
-    if (res.status >= 300) throw new Error(res.data)
-    return res.data
+    const responseText = res.data.toString()
+    if (res.status >= 300) throw new Error(responseText)
+    return responseText
   }
 }
 
@@ -100,7 +122,7 @@ export const validateDayAndYear = (day: number, year: number) => {
   if (year < 2015) throw new Error('year must be 2015 or greater')
 }
 
-export const getNextChallengeStart = () => {
+const getNextChallengeStart = () => {
   const now = new Date()
   const curYear = now.getUTCFullYear()
   const firstChallengeOfYear = new Date(Date.UTC(curYear, 11, 1, 5, 0, 0, 0))
@@ -113,7 +135,7 @@ export const getNextChallengeStart = () => {
   )
 }
 
-export const getPrevChallengeStart = () => {
+const getPrevChallengeStart = () => {
   const now = new Date()
   const curYear = now.getUTCFullYear()
   const firstChallengeOfYear = new Date(Date.UTC(curYear, 11, 1, 5, 0, 0, 0))
@@ -125,3 +147,33 @@ export const getPrevChallengeStart = () => {
     Date.UTC(curYear, 11, now.getUTCDate() - (now.getUTCHours() < 5 ? 1 : 0), 5, 0, 0, 0),
   )
 }
+
+export const getCurrentChallengeStartTime = (margin = 1000 * 60 * 60 * 23) => {
+  const next = getNextChallengeStart()
+  const prev = getPrevChallengeStart()
+  return Date.now() - prev.getTime() < margin ? prev : next
+}
+
+export const getChallengeStartTime = (year: number, day: number) =>
+  new Date(Date.UTC(year, 11, day, 5, 0, 0, 0))
+
+export const normalizeTemplate = (template: AocTemplate): AocTemplateNormalized => {
+  if (typeof template === 'string') {
+    if (!builtinTemplates[template]) {
+      throw new Error(`built-in template '${template}' does not exist`)
+    }
+    return builtinTemplates[template]
+  }
+
+  return template
+}
+
+export const buildCommand = (command: string, srcPath: string) => {
+  const vars = { src: path.relative(process.cwd(), srcPath) }
+  return command.replace(/\{([^}]+)\}/g, (_match, _i, key) => {
+    if (!vars.hasOwnProperty(key)) throw new Error(`unknown variable '${key}' in template command`)
+    return vars[key]
+  })
+}
+
+export const getDirForDay = (day: number) => path.resolve(padZero(day, 2))

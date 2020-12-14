@@ -1,0 +1,1 @@
+When creating a new template make sure you start the source file name with `wip` (case-insensitive) if possible since that is how the tool identifies the source file which should be saved on successful submission.
