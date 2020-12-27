@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           # Fetch Git history so that Changesets can generate changelogs with correct commits
-          fetch-depth: 100
+          fetch-depth: 0
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
