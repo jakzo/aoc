@@ -34,6 +34,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
+          persist-credentials: false
           # Fetch Git history so that Changesets can generate changelogs with correct commits
           fetch-depth: 0
       - name: Setup Node.js
