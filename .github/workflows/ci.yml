@@ -23,9 +23,6 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Test
         run: yarn test
-      - name: Ensure changeset
-        if: github.ref != 'refs/heads/master'
-        run: yarn changeset status --since=main
 
   release:
     name: Release
