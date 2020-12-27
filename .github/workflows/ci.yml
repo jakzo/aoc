@@ -25,7 +25,7 @@ jobs:
         run: yarn test
       - name: Ensure changeset
         if: github.ref != 'refs/heads/master'
-        run: changeset status --sinceMaster
+        run: yarn changeset status --sinceMaster
 
   release:
     name: Release

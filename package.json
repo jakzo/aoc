@@ -13,7 +13,7 @@
     "dev": "ts-node ./src/bin.ts",
     "test": "yarn build --noEmit",
     "release": "yarn build:clean && yarn build && changeset publish",
-    "postinstall": "husky install",
+    "postinstall": "is-ci || husky install",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"
   },
@@ -41,6 +41,7 @@
     "@types/node": "^14.14.10",
     "@types/yargs": "^15.0.11",
     "husky": "^5.0.6",
+    "is-ci": "^2.0.0",
     "pinst": "^2.1.1",
     "ts-node": "^9.1.0",
     "typescript": "^4.1.2"
