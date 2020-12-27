@@ -1,0 +1,7 @@
+[package]
+name = "aoc"
+version = "0.1.0"
+
+[[bin]]
+path = "wip.rs"
+name = "wip"

@@ -1,7 +1,7 @@
 {
   "name": "@jakzo/aoc",
   "description": "CLI for reading, running and submitting Advent of Code challenges.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "dist/index.js",
   "license": "MIT",
   "bin": {
@@ -22,6 +22,7 @@
     "inquirer": "^7.3.3",
     "keytar": "^7.2.0",
     "string-argv": "^0.3.1",
+    "tempy": "^1.0.0",
     "yargs": "^16.1.1"
   },
   "devDependencies": {

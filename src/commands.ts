@@ -3,10 +3,11 @@ import { formatDistanceToNowStrict } from 'date-fns'
 import keytar from 'keytar'
 import fse from 'fs-extra'
 import chokidar from 'chokidar'
-import { ChildProcess, spawn } from 'child_process'
+import { spawn } from 'child_process'
 import inquirer from 'inquirer'
 import path from 'path'
 import chalk from 'chalk'
+import tempy from 'tempy'
 
 import {
   getCurrentDay,
@@ -23,7 +24,7 @@ import {
   logHtml,
   getChallengeStartTime,
 } from './utils'
-import { AocTemplate } from './templates'
+import { AocTemplate, CommandBuilder } from './templates'
 
 export const main = async (
   year = getCurrentChallengeStartTime().getUTCFullYear(),
@@ -45,7 +46,7 @@ export const main = async (
       ])
       const { isCorrect, isDone } = await submit(part, answer, day, year, true, account)
       if (isCorrect) {
-        const wipRegex = /\bwip\b/
+        const wipRegex = /\bwip\b/i
         for (const filename of await fse.readdir(dir)) {
           if (!wipRegex.test(filename)) continue
           await fse.copy(
@@ -66,12 +67,7 @@ export const start = async (template: AocTemplate = 'js', day = getCurrentDay())
   const dir = getDirForDay(day)
   const normalizedTemplate = normalizeTemplate(template)
   await copyTemplates(dir, normalizedTemplate.path)
-  return runAndWatch(
-    normalizedTemplate.command,
-    normalizedTemplate.args,
-    dir,
-    normalizedTemplate.files,
-  )
+  return runAndWatch(normalizedTemplate.commandBuilder, dir, normalizedTemplate.files)
 }
 
 export const loginPrompt = async (account = DEFAULT_ACCOUNT) => {
@@ -159,8 +155,8 @@ export const submit = async (
     .remove()
   const html = $(main)
     .html()
-    .replace(/If you.{1,8}re stuck.+?subreddit.+?\.\s*/, '')
-    .replace(/You can.+?this victory.+?\.\s*/, '')
+    .replace(/If\s+you[^]{1,8}re\s+stuck[^]+?subreddit[^]+?\.\s*/, '')
+    .replace(/You\s+can[^]+?this\s+victory[^]+?\.\s*/, '')
   $(main).html(html)
   const text = $(main).text()
 
@@ -174,17 +170,50 @@ export const submit = async (
 }
 
 export const runAndWatch = (
-  command: string,
-  args: string[],
+  commandBuilder: CommandBuilder,
   dir = process.cwd(),
   filesToWatch = [dir],
 ) => {
-  let cp: ChildProcess
+  let tempDir: undefined | string
+  const commands = commandBuilder({
+    get tempDir() {
+      if (!tempDir) tempDir = tempy.directory({ prefix: 'aoc' })
+      return tempDir
+    },
+  })
+
+  let killPrevRun: undefined | (() => void)
   return chokidar.watch(filesToWatch.map(file => path.resolve(dir, file))).on('all', () => {
-    // TODO: How do I handle this gracefully?
-    if (cp) cp.kill()
-    console.log(chalk.yellow('Running command on file change:'), command, args)
-    cp = spawn(command, args, { cwd: dir, stdio: 'inherit' })
+    if (killPrevRun) killPrevRun()
+
+    let i = -1
+    let killed = false
+    const runNextCommand = (code?: number) => {
+      if (killed) return
+
+      if (code) {
+        console.warn(chalk.yellow('Finished with error'))
+        return
+      }
+      if (++i >= commands.length) {
+        console.log(chalk.yellow('Finished'))
+        return
+      }
+
+      const { command, args = [], cwd = dir } = commands[i]
+      console.log(
+        chalk.yellow(i === 0 ? 'Running command on file change:' : 'Running:'),
+        [command, ...args].join(' '),
+      )
+      const cp = spawn(command, args, { cwd, stdio: 'inherit' })
+      cp.on('close', runNextCommand)
+      killPrevRun = () => {
+        // TODO: How do I handle this gracefully?
+        cp.kill()
+        killed = true
+      }
+    }
+    runNextCommand()
   })
 }
 
