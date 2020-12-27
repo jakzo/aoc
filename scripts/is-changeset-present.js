@@ -6,9 +6,9 @@ const main = async () => {
   try {
     const releasePlan = await getReleasePlan(path.join(__dirname, '..'), 'master')
     const hasChangeset = releasePlan.changesets.length > 0
-    if (hasChangeset) return
+    if (!hasChangeset) return
     console.log(chalk.yellow('No changeset found. Creating one now...'))
-    require('@changesets/cli')
+    process.exit(1)
   } catch (err) {
     console.error(err)
     console.error(chalk.red('Failed to check changeset. Ignoring error and continuing...'))

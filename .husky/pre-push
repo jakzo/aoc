@@ -2,6 +2,9 @@
 . "$(dirname $0)/_/husky.sh"
 
 exec </dev/tty
-node ./scripts/add-changeset-if-not-present.js
-# Wait until changeset finishes committing
-sleep 5
+if ! node ./scripts/is-changeset-present.js; then
+  yarn changeset
+  git push --no-verify
+  echo "Running $(git push) again now that changeset is present."
+  git push $3 $2
+fi

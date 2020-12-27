@@ -3,7 +3,3 @@ Contributions are welcome! 😄 Feel free to open a PR for small fixes or open a
 ## Dev instructions
 
 To test the tool during development instead of running `aoc [args...]` run `yarn dev [args...]`.
-
-## Opening PRs
-
-Run `yarn changeset` before you commit. This will create a file which will publish your changes when the PR is merged.
