@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "license": "MIT",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "bin": {
     "aoc": "dist/bin.js"
