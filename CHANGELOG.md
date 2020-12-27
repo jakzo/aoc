@@ -1,6 +1,17 @@
 # @jakzo/aoc
 
+## 0.2.2
+
+### Patch Changes
+
+- 23bbb9b: test
+- a12ab9d: test
+- 0e0fc3a: test
+- 046dc1f: test
+- 28b3402: test
+
 ## 0.2.1
+
 ### Patch Changes
 
 - 55efd78: Testing
