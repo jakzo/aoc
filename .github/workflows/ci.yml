@@ -49,7 +49,6 @@ jobs:
           yarn changeset version
       - name: Publish to npm
         run: |
-          cat .npmrc
           echo '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}' > .npmrc
           npm publish --access public --registry=https://registry.npmjs.org
           yarn release
