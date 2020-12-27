@@ -43,7 +43,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Bump versions according to changeset
-        run: >
+        run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           yarn changeset version
