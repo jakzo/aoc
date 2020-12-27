@@ -9,20 +9,20 @@ on:
       - '*'
 
 jobs:
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@master
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Test
-        run: yarn test
+  # test:
+  #   name: Test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@master
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: 14.x
+  #     - name: Install dependencies
+  #       run: yarn install --frozen-lockfile
+  #     - name: Test
+  #       run: yarn test
 
   release:
     name: Release
@@ -48,7 +48,10 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           yarn changeset version
       - name: Publish to npm
-        run: yarn release
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
