@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@master
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -32,9 +32,8 @@ jobs:
     environment: Release
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@master
         with:
-          persist-credentials: false
           # Fetch Git history so that Changesets can generate changelogs with correct commits
           fetch-depth: 0
       - name: Setup Node.js
@@ -49,7 +48,7 @@ jobs:
         id: changesets
         uses: changesets/action@master
         with:
-          publish: git config --local user.email "action@github.com" && git config --local user.name "GitHub Action" && yarn release
+          publish: yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
