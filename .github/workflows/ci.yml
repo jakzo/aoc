@@ -49,10 +49,8 @@ jobs:
           yarn changeset version
       - name: Publish to npm
         run: |
-          npm publish --access public
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          npm publish --access public --registry=https://registry.npmjs.org
           yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN2 }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
