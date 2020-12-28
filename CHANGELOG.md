@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 0.2.5
+
+### Patch Changes
+
+- da738d5: ci
+
 ## 0.2.4
 
 ### Patch Changes
