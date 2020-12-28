@@ -52,14 +52,14 @@ jobs:
         run: |
           echo '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}' > .npmrc
           yarn release
-          echo ::set-env name=version_tag::$(git describe --tags --abbrev=0)
-          echo ::set-env name=release_changelog::$(
+          echo "version_tag=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+          echo "release_changelog<<EOF$(
             node -e '
               const changelog = require("fs").readFileSync("CHANGELOG.md", "utf8");
               const version = require("./package.json").version;
               console.log(require("@changesets/release-utils").getChangelogEntry(changelog, version).content);
             '
-          )
+          )EOF" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
