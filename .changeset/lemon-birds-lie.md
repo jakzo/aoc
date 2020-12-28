@@ -1,0 +1,5 @@
+---
+'@jakzo/aoc': patch
+---
+
+ci
