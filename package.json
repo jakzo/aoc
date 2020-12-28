@@ -1,7 +1,7 @@
 {
   "name": "@jakzo/aoc",
   "description": "CLI for reading, running and submitting Advent of Code challenges.",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "main": "dist/index.js",
   "license": "MIT",
   "bin": {

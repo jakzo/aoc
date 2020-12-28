@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 0.2.7
+
+### Patch Changes
+
+- df76f70: ci
+
 ## 0.2.6
 
 ### Patch Changes
