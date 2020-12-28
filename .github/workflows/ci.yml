@@ -49,19 +49,20 @@ jobs:
           yarn changeset version
           git push
       - name: Publish to npm
+        id: publish
         run: |
           echo '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}' > .npmrc
           yarn release
-          echo "version_tag=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
-          echo "release_changelog<<EOF
-          $(
-            node -e '
-              const changelog = require("fs").readFileSync("CHANGELOG.md", "utf8");
-              const version = require("./package.json").version;
-              console.log(require("@changesets/release-utils").getChangelogEntry(changelog, version).content);
-            '
-          )
-          EOF" >> $GITHUB_ENV
+          echo "::set-output name=version_tag::$(git describe --tags --abbrev=0)"
+          release_changelog=$(node -e '
+            const changelog = require("fs").readFileSync("CHANGELOG.md", "utf8");
+            const { version } = require("./package.json");
+            console.log(require("@changesets/release-utils").getChangelogEntry(changelog, version).content);
+          ')
+          release_changelog="${release_changelog//%/'%25'}"
+          release_changelog="${release_changelog//$'\n'/'%0A'}"
+          release_changelog="${release_changelog//$'\r'/'%0D'}"
+          echo "::set-output name=release_changelog::$release_changelog"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -71,6 +72,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.version_tag }}
-          release_name: ${{ env.version_tag }}
-          body: ${{ env.release_changelog }}
+          tag_name: ${{ steps.publish.outputs.version_tag }}
+          release_name: ${{ steps.publish.outputs.version_tag }}
+          body: ${{ steps.publish.outputs.release_changelog }}
