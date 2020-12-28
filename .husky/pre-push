@@ -7,10 +7,10 @@ YELLOW='\033[0;33m'
 NC='\033[0m'
 
 exec </dev/tty
-if ! yarn --silent changeset status --since=master; then
-  echo "$YELLOW\`git push\` cancelled. Will push after creating changeset now... (use CTRL-C to push without creating changeset)$NC"
+if ! yarn --silent changeset status; then
+  echo "If wanted to push without creating a changeset use \`yarn changeset --empty\` before pushing."
+  echo "${YELLOW}Creating changeset now...${NC}"
   yarn --silent changeset
-  echo 'Running `git push` again...'
-  git push $3 $2 --no-verify
+  echo "${YELLOW}Please run \`git push\` again.${NC}"
   exit 1
 fi
