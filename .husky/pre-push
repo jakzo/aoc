@@ -1,10 +1,16 @@
 #!/bin/sh
 . "$(dirname $0)/_/husky.sh"
 
+set -e
+
+YELLOW='\033[0;33m'
+NC='\033[0m'
+
 exec </dev/tty
-if ! node ./scripts/is-changeset-present.js; then
-  yarn changeset
-  git push --no-verify
-  echo "Running $(git push) again now that changeset is present."
-  git push $3 $2
+if ! yarn --silent changeset status --since=master; then
+  echo "$YELLOW\`git push\` cancelled. Will push after creating changeset now... (use CTRL-C to push without creating changeset)$NC"
+  yarn --silent changeset
+  echo 'Running `git push` again...'
+  git push $3 $2 --no-verify
+  exit 1
 fi
