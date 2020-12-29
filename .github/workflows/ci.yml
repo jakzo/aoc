@@ -110,6 +110,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      - name: Build JavaScript
+        run: yarn build
       - name: Build binary
         id: build
         run: |
