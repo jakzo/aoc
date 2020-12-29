@@ -116,6 +116,7 @@ jobs:
         run: yarn build
       - name: Build binary
         id: build
+        shell: bash
         run: |
           pkg_arch="node${{ matrix.node-version }}-${{ matrix.os-pkg-name }}-${{ matrix.arch }}"
           pkg_out="./dist-bin/aoc-${{ matrix.os-pkg-name }}-${{ matrix.arch }}"

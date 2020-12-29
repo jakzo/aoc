@@ -13,7 +13,7 @@
   "scripts": {
     "build": "tsc",
     "build:clean": "rimraf \"./dist\" *.tsbuildinfo",
-    "build:binaries": "pkg -c package.json -t node12-linux-x64,node12-macos-x64,node12-win-x64 -o dist-bin/aoc ./dist/bin.js",
+    "build:binary": "pkg -c package.json -t node12-linux-x64,node12-macos-x64,node12-win-x64 -o dist-bin/aoc ./dist/bin.js",
     "dev": "ts-node ./src/bin.ts",
     "test": "yarn build --noEmit",
     "release": "yarn build:clean && yarn build && changeset publish",
