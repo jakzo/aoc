@@ -8,26 +8,29 @@ on:
     branches:
       - '*'
 
+env:
+  node_version: 14
+
 jobs:
-  # test:
-  #   name: Test
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v2
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: 14.x
-  #     - name: Install dependencies
-  #       run: yarn install --frozen-lockfile
-  #     - name: Test
-  #       run: yarn test
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.node_version }}
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Test
+        run: yarn test
 
   release:
     name: Release
     runs-on: ubuntu-latest
-    # needs: test
+    needs: test
     if: github.ref == 'refs/heads/master'
     environment: Release
     outputs:
@@ -41,7 +44,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: ${{ env.node_version }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Bump versions according to changeset
@@ -83,7 +86,6 @@ jobs:
       matrix:
         arch: [x64]
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node-version: [14]
         include:
           - os: ubuntu-latest
             os-display-name: Linux
@@ -96,9 +98,7 @@ jobs:
             os-pkg-name: macos
 
     name: Build binary for ${{ matrix.os-display-name }}
-    needs:
-      #   - test
-      - release
+    needs: release
     if: github.ref == 'refs/heads/master'
 
     runs-on: ${{ matrix.os }}
@@ -109,7 +109,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.node_version }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Build JavaScript
@@ -118,7 +118,7 @@ jobs:
         id: build
         shell: bash
         run: |
-          pkg_arch="node${{ matrix.node-version }}-${{ matrix.os-pkg-name }}-${{ matrix.arch }}"
+          pkg_arch="node${{ env.node_version }}-${{ matrix.os-pkg-name }}-${{ matrix.arch }}"
           pkg_out="./dist-bin/aoc-${{ matrix.os-pkg-name }}-${{ matrix.arch }}"
           yarn pkg -c package.json -t "$pkg_arch" -o "$pkg_out" ./dist/bin.js
           echo "::set-output name=bin_file::$(ls -1 ./dist-bin/ | head -n1)"
