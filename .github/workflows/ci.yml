@@ -30,6 +30,8 @@ jobs:
     # needs: test
     if: github.ref == 'refs/heads/master'
     environment: Release
+    outputs:
+      release_upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -124,7 +126,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.publish.outputs.upload_url }}
+          upload_url: ${{ needs.release.outputs.release_upload_url }}
           asset_path: ./dist-bin/${{ steps.build.outputs.bin_file }}
           asset_name: ${{ steps.build.outputs.bin_file }}
           asset_content_type: application/octet-stream
