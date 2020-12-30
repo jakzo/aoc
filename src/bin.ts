@@ -20,7 +20,9 @@ import { AocTemplate, AocTemplateBuiltin, builtinTemplates } from './templates'
 const readStdin = async () => {
   const chunks = []
   for await (const chunk of process.stdin) chunks.push(chunk)
-  return Buffer.concat(chunks).toString('utf8').trim()
+  return Buffer.concat(chunks)
+    .toString('utf8')
+    .trim()
 }
 
 const cliHandler = <T>(fn: (args: T) => Promise<void>) => async (args: T) => {
@@ -74,13 +76,9 @@ yargs
     }),
   )
   .command(
-    'login <token>',
+    'login',
     'Prompts for a new session token',
-    yargs =>
-      yargs.positional('token', {
-        type: 'string',
-        description: 'Session token (use dev tools to find `session` cookie)',
-      }),
+    yargs => yargs,
     cliHandler(async () => loginPrompt()),
   )
   .command(

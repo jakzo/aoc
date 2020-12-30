@@ -70,6 +70,7 @@ move rax, 123
 %macro part 2
 solution input, %2
 mov rbx, rsp
+; TODO: Print properly
 push 10
 int_to_str
 push ": "

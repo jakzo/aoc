@@ -33,6 +33,7 @@ export const main = async (
 ) => {
   await getSessionToken(account, true)
   await countdownToStart(undefined, getChallengeStartTime(year, day).getTime())
+  // TODO: Continue to part 2 if part 1 is already completed
   let part = 1
   await printDescription(year, day, part, account)
   const dir = getDirForDay(day)

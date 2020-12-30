@@ -6,7 +6,7 @@ import cliHtml from 'cli-html'
 
 import { AocTemplate, AocTemplateNormalized, builtinTemplates } from './templates'
 
-export const KEYTAR_SERVICE_NAME = 'advent-of-code'
+export const KEYTAR_SERVICE_NAME = 'jakzo-aoc'
 export const DEFAULT_ACCOUNT = '_default'
 const BASE_URL = 'https://adventofcode.com'
 const BACKOFF_RATE = 1.1
@@ -104,6 +104,7 @@ export const makeRequest = async (url: string, token: string, data?: Record<stri
       })
     } catch (err) {
       console.warn(`Request failed and will retry: ${err}`)
+      continue
     }
 
     if (res.status >= 500) {

@@ -42,6 +42,7 @@ const templateCommands = declareTemplates({
     { command: 'java', args: ['-classpath', ctx.tempDir, 'Main'] },
   ],
   python: () => [{ command: 'python', args: ['wip.py'] }],
+  ruby: () => [{ command: 'ruby', args: ['wip.rb'] }],
   rust: ctx => [
     { command: 'rustc', args: ['-o', path.join(ctx.tempDir, 'wip'), 'wip.rs'] },
     { command: path.join(ctx.tempDir, 'wip') },
