@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": ["./src/"],
+  "compilerOptions": {
+    "declaration": true,
+    "sourceMap": true,
+    "module": "CommonJS",
+    "target": "ES2015",
+    "outDir": "./dist/",
+    "types": ["node"],
+    "rootDir": "./src/"
+  }
+}

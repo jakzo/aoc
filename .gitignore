@@ -3,3 +3,10 @@ node_modules/
 dist/
 dist-bin/
 *.log
+Thumbs.db
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+package-lock.json
+.eslintcache

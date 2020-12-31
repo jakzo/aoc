@@ -1,5 +1,3 @@
-# aoc
-
 Full Advent of Code dev loop in a CLI which:
 
 - Prints challenge description in the terminal
@@ -11,7 +9,11 @@ Full Advent of Code dev loop in a CLI which:
 
 ## Recommended Usage
 
-Install with `npm i -g @jakzo/aoc` (if you prefer you can install a binary from the [Installation](#Installation) section below).
+Install from [binary below](#Installation) or (preferably) with Node like so:
+
+```sh
+npm i -g @jakzo/aoc
+```
 
 A few minutes before the challenge starts, open two terminals and run these commands:
 
@@ -83,7 +85,7 @@ Documentation for individual commands can be found by running `aoc --help`.
 Individual commands can also be accessed from the npm module like:
 
 ```js
-const { printDescription } = require('@jakzo/aoc')
+const { printDescription } = require("@jakzo/aoc");
 
-printDescription(2020, 5)
+printDescription(2020, 5);
 ```

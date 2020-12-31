@@ -1,2 +1,2 @@
-export * from './commands'
-export * from './templates'
+export * from "./commands";
+export * from "./templates";

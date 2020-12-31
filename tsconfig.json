@@ -1,15 +1,12 @@
 {
-  "include": ["./src/"],
+  "exclude": ["./dist/", "./templates/"],
+  "extends": "./tsconfig.base.json",
+  "include": ["./", "**/.*"],
   "compilerOptions": {
-    "declaration": true,
-    "sourceMap": true,
+    "noEmit": true,
     "module": "CommonJS",
-    "target": "ES2015",
+    "target": "ES2019",
     "allowJs": true,
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "outDir": "./dist/",
-    "types": ["node"]
+    "types": ["node", "jest"]
   }
 }
