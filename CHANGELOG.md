@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.0.0
+
+### Major Changes
+
+- 8f5bd58: Minor fixes and stable release
+
 ## 0.3.1
 
 ### Patch Changes
