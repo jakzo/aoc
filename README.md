@@ -32,7 +32,7 @@ From here the first terminal will:
 - Count down until the challenge starts
 - Print the description in the terminal once the challenge starts
 - Download the input to a local file called `input.txt`
-- Prompt for an answers to submit
+- Prompt for an answer to submit
 - When a correct answer is submitted, repeats these steps for part 2
 
 And the second terminal will:

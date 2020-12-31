@@ -5875,7 +5875,7 @@ stream-transform@^2.0.1:
   dependencies:
     mixme "^0.4.0"
 
-string-argv@0.3.1, string-argv@^0.3.1:
+string-argv@0.3.1:
   version "0.3.1"
   resolved "https://packages.atlassian.com/api/npm/npm-remote/string-argv/-/string-argv-0.3.1.tgz#95e2fbec0427ae19184935f816d74aaa4c5c19da"
   integrity sha1-leL77AQnrhkYSTX4FtdKqkxcGdo=
