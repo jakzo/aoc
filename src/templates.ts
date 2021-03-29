@@ -43,6 +43,7 @@ const templateCommands = declareTemplates({
     { command: "javac", args: ["-d", ctx.tempDir, "Main.wip.java"] },
     { command: "java", args: ["-classpath", ctx.tempDir, "Main"] },
   ],
+  nim: () => [{ command: "nim", args: ["--hints:off", "r", "wip.nim"] }],
   python: () => [{ command: "python", args: ["wip.py"] }],
   ruby: () => [{ command: "ruby", args: ["wip.rb"] }],
   rust: (ctx) => [
