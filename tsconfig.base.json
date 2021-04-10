@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true
-  }
-}

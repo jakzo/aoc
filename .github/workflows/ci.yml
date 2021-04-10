@@ -1,3 +1,5 @@
+# DO NOT MODIFY
+# This file is auto-generated (make another YAML file in this directory instead)
 name: CI
 
 on:
@@ -15,9 +17,14 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    outputs:
+      release_required: ${{ steps.release_required.outputs.result }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          # Fetch Git history so that Changesets can check if release is required
+          fetch-depth: 0
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -25,13 +32,25 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Test
-        run: yarn test
+        run: |
+          set -e
+          yarn run-if-script-exists test:ci:before
+          yarn test:all
+          yarn run-if-script-exists test:ci:after
+      - name: Check if release is required
+        uses: actions/github-script@v3
+        id: release_required
+        with:
+          script: |
+            const releaseUtils = require(process.env.GITHUB_WORKSPACE + '/node_modules/@changesets/release-utils');
+            const { changesets } = await releaseUtils.readChangesetState();
+            return changesets.length > 0;
 
   release:
     name: Release
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/master'
+    if: ${{ github.ref == 'refs/heads/master' && needs.test.outputs.release_required == 'true' }}
     environment: Release
     outputs:
       release_upload_url: ${{ steps.create_release.outputs.upload_url }}
@@ -49,25 +68,21 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Bump versions according to changeset
         run: |
+          set -e
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           yarn changeset version
-          git push
+          git push --no-verify
       - name: Publish to npm
         id: publish
         run: |
+          set -e
           echo '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}' > .npmrc
+          yarn run-if-script-exists release:ci:before
           yarn release
           echo "::set-output name=version_tag::$(git describe --tags --abbrev=0)"
-          release_changelog=$(node -e '
-            const changelog = require("fs").readFileSync("CHANGELOG.md", "utf8");
-            const { version } = require("./package.json");
-            console.log(require("@changesets/release-utils").getChangelogEntry(changelog, version).content);
-          ')
-          release_changelog="${release_changelog//%/'%25'}"
-          release_changelog="${release_changelog//$'\n'/'%0A'}"
-          release_changelog="${release_changelog//$'\r'/'%0D'}"
-          echo "::set-output name=release_changelog::$release_changelog"
+          echo "::set-output name=release_changelog::$(yarn --silent ci-github-print-changelog)"
+          yarn run-if-script-exists release:ci:after
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -80,54 +95,3 @@ jobs:
           tag_name: ${{ steps.publish.outputs.version_tag }}
           release_name: ${{ steps.publish.outputs.version_tag }}
           body: ${{ steps.publish.outputs.release_changelog }}
-
-  build:
-    strategy:
-      matrix:
-        arch: [x64]
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        include:
-          - os: ubuntu-latest
-            os-display-name: Linux
-            os-pkg-name: linux
-          - os: windows-latest
-            os-display-name: Windows
-            os-pkg-name: win
-          - os: macos-latest
-            os-display-name: macOS
-            os-pkg-name: macos
-
-    name: Build binary for ${{ matrix.os-display-name }}
-    needs: release
-    if: github.ref == 'refs/heads/master'
-
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ env.node_version }}
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Build JavaScript
-        run: yarn build
-      - name: Build binary
-        id: build
-        shell: bash
-        run: |
-          pkg_arch="node${{ env.node_version }}-${{ matrix.os-pkg-name }}-${{ matrix.arch }}"
-          pkg_out="./dist-bin/aoc-${{ matrix.os-pkg-name }}-${{ matrix.arch }}"
-          yarn pkg -c package.json -t "$pkg_arch" -o "$pkg_out" ./dist/bin.js
-          echo "::set-output name=bin_file::$(ls -1 ./dist-bin/ | head -n1)"
-      - name: Upload binary to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.release.outputs.release_upload_url }}
-          asset_path: ./dist-bin/${{ steps.build.outputs.bin_file }}
-          asset_name: ${{ steps.build.outputs.bin_file }}
-          asset_content_type: application/octet-stream

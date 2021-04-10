@@ -1,9 +1,20 @@
 {
   "name": "@jakzo/aoc",
-  "description": "CLI for reading, running and submitting Advent of Code challenges.",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "description": "CLI for reading, running and submitting Advent of Code challenges.",
+  "keywords": [],
+  "homepage": "https://github.com/jakzo/aoc#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jakzo/aoc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jakzo/aoc/issues"
+  },
+  "author": "Jack Field",
   "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "engines": {
     "node": ">=10"
   },
@@ -13,22 +24,28 @@
   "pkg": {
     "assets": "templates/**/*"
   },
-  "lint-staged": {
-    "*": "prettier -c -w",
-    "*.{ts,tsx}": "eslint --cache --fix"
-  },
   "scripts": {
-    "build": "tsc -P ./tsconfig.build.json",
-    "build:clean": "rimraf \"./dist\" *.tsbuildinfo",
+    "=== Generated Scripts (do not modify) ===": "",
+    "dev": "project && ts-node-dev ./src/index.ts",
+    "lint:eslint": "project && eslint --cache --ext js,jsx,ts,tsx ./",
+    "lint:prettier": "project && prettier -c \"./**/*{.json,.md}\"",
+    "lint:fix": "project && eslint --cache --ext js,jsx,ts,tsx ./ --fix && prettier -c \"./**/*{.json,.md}\" --write && run-if-script-exists lint:fix:custom",
+    "lint": "project && eslint --cache --ext js,jsx,ts,tsx ./ && prettier -c \"./**/*{.json,.md}\" && run-if-script-exists lint:custom",
+    "build:clean": "project && rimraf \"./dist\" *.tsbuildinfo && run-if-script-exists build:clean:custom",
+    "build:typescript": "project && tsc -p ./tsconfig.build.json",
+    "build:watch": "project && tsc -p ./tsconfig.build.json -w",
+    "build": "project && run-if-script-exists build:custom-before && tsc -p ./tsconfig.build.json && run-if-script-exists build:custom",
+    "test:jest": "project && jest --passWithNoTests",
+    "test:watch": "project && jest --passWithNoTests --watch",
+    "test": "project && jest --passWithNoTests && run-if-script-exists test:custom",
+    "test:typecheck": "project && tsc -p ./tsconfig.json --noEmit && tsc -p ./tsconfig.build.json --noEmit",
+    "test:all": "project && tsc -p ./tsconfig.json --noEmit && tsc -p ./tsconfig.build.json --noEmit && eslint --cache --ext js,jsx,ts,tsx ./ && prettier -c \"./**/*{.json,.md}\" && run-if-script-exists lint:custom && jest --passWithNoTests && run-if-script-exists test:custom",
+    "release": "project && rimraf \"./dist\" *.tsbuildinfo && run-if-script-exists build:clean:custom && run-if-script-exists build:custom-before && tsc -p ./tsconfig.build.json && run-if-script-exists build:custom && changeset publish && run-if-script-exists release:custom",
+    "prepare": "project && husky install && run-if-script-exists prepare:custom",
+    "=== (end generated scripts) ===": "",
+    "": "",
     "build:binary": "pkg -c package.json -t node12-linux-x64,node12-macos-x64,node12-win-x64 -o dist-bin/aoc ./dist/bin.js",
-    "dev": "ts-node -T ./src/bin.ts",
-    "test": "tsc --noEmit && eslint . --cache --ext .ts,js",
-    "format": "prettier . -c -w",
-    "release": "yarn build:clean && yarn build && changeset publish",
-    "postinstall": "is-ci || husky install",
-    "prepublishOnly": "pinst --disable",
-    "postpublish": "pinst --enable",
-    "lint": "eslint . --cache --fix --ext .ts,js"
+    "format": "prettier . -c -w"
   },
   "dependencies": {
     "axios": "^0.21.0",
@@ -44,31 +61,11 @@
     "yargs": "^16.1.1"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.12.0",
-    "@changesets/get-release-plan": "^2.0.1",
-    "@changesets/release-utils": "^0.1.0",
     "@jakzo/pkg": "^4.4.9",
+    "@jstm/preset-node": "0.2.14",
     "@types/cheerio": "^0.22.22",
     "@types/fs-extra": "^9.0.4",
     "@types/inquirer": "^7.3.1",
-    "@types/jest": "^26.0.19",
-    "@types/node": "^14.14.10",
-    "@types/yargs": "^15.0.11",
-    "@typescript-eslint/eslint-plugin": "^4.11.1",
-    "@typescript-eslint/parser": "^4.11.1",
-    "eslint": "^7.16.0",
-    "eslint-config-prettier": "^7.1.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-only-warn": "^1.0.2",
-    "eslint-plugin-prettier": "^3.3.0",
-    "husky": "^5.0.6",
-    "is-ci": "^2.0.0",
-    "jest": "^26.6.3",
-    "lint-staged": "^10.5.3",
-    "pinst": "^2.1.1",
-    "prettier": "^2.2.1",
-    "rimraf": "^3.0.2",
-    "ts-node": "^9.1.0",
-    "typescript": "^4.1.2"
+    "@types/yargs": "^15.0.11"
   }
 }

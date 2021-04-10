@@ -1,4 +1,13 @@
 #!/bin/sh
-. "$(dirname $0)/_/husky.sh"
 
-yarn lint-staged
+# DO NOT MODIFY
+# This file is auto-generated (make changes to pre-commit-custom instead)
+
+. "$(dirname "$0")/_/husky.sh"
+
+"$(dirname "$0")/../node_modules/.bin/lint-staged"
+
+CUSTOM_SCRIPT="$(dirname "$0")/pre-commit-custom"
+if [ -x "$CUSTOM_SCRIPT" ]; then
+  "$CUSTOM_SCRIPT"
+fi

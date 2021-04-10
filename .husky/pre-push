@@ -1,16 +1,16 @@
 #!/bin/sh
-. "$(dirname $0)/_/husky.sh"
 
-set -e
+# DO NOT MODIFY
+# This file is auto-generated (make changes to pre-push-custom instead)
 
-YELLOW='\033[0;33m'
-NC='\033[0m'
+. "$(dirname "$0")/_/husky.sh"
 
-exec </dev/tty
-if ! yarn --silent changeset status; then
-  echo "If wanted to push without creating a changeset use \`yarn changeset --empty\` before pushing."
-  echo "${YELLOW}Creating changeset now...${NC}"
-  yarn --silent changeset
-  echo "${YELLOW}Please run \`git push\` again.${NC}"
-  exit 1
+if [ -t 1 ]; then
+  exec </dev/tty
+  "$(dirname "$0")/../node_modules/.bin/project-pre-push"
+fi
+
+CUSTOM_SCRIPT="$(dirname "$0")/pre-push-custom"
+if [ -x "$CUSTOM_SCRIPT" ]; then
+  "$CUSTOM_SCRIPT"
 fi

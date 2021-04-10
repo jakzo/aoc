@@ -1,12 +1,1 @@
-{
-  "exclude": ["./dist/", "./templates/"],
-  "extends": "./tsconfig.base.json",
-  "include": ["./", "**/.*"],
-  "compilerOptions": {
-    "noEmit": true,
-    "module": "CommonJS",
-    "target": "ES2019",
-    "allowJs": true,
-    "types": ["node", "jest"]
-  }
-}
+{ "extends": "./tsconfig.base.json" }
