@@ -171,7 +171,7 @@ const getPrevChallengeStart = (): Date => {
   const firstChallengeOfYear = new Date(Date.UTC(curYear, 11, 1, 5, 0, 0, 0));
   const lastChallengeOfYear = new Date(Date.UTC(curYear, 11, 25, 5, 0, 0, 0));
   const lastChallengeOfLastYear = new Date(
-    Date.UTC(curYear + 1, 11, 1, 5, 0, 0, 0)
+    Date.UTC(curYear - 1, 11, 25, 5, 0, 0, 0)
   );
   if (now < firstChallengeOfYear) return lastChallengeOfLastYear;
   if (now > lastChallengeOfYear) return lastChallengeOfYear;
