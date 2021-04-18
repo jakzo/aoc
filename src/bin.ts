@@ -17,7 +17,7 @@ import {
 import { AocTemplate, AocTemplateBuiltin, builtinTemplates } from "./templates";
 import { normalizeTemplate } from "./utils";
 
-const readStdin = async () => {
+const readStdin = async (): Promise<string> => {
   const chunks = [];
   for await (const chunk of process.stdin) chunks.push(chunk);
   return Buffer.concat(chunks).toString("utf8").trim();
@@ -84,6 +84,7 @@ yargs
       yargs
         .positional("output", {
           type: "string",
+          demandOption: true,
           description:
             "Path to the directory to create and fill with the template contents",
         })
@@ -245,6 +246,7 @@ yargs
         })
         .positional("id", {
           type: "string",
+          demandOption: true,
           description: "Private leaderboard ID (find it in the URL)",
         }),
     cliHandler(async (args) => {

@@ -3,7 +3,7 @@ import path from "path";
 
 const declareTemplates = <K extends string>(
   commands: Record<K, CommandBuilder>
-) => commands;
+): Record<K, CommandBuilder> => commands;
 
 const templateCommands = declareTemplates({
   "assembly-x86-mac": (ctx) => [

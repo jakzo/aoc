@@ -19,7 +19,8 @@ const callbackToAsyncIterator = <T>() => {
   addPromiseToQueue();
 
   const iterator: AsyncIterator<T> = {
-    next: () => promiseQueue.shift(),
+    next: () =>
+      promiseQueue.shift() || Promise.resolve({ done: true, value: undefined }),
   };
   const iterable: AsyncIterable<T> = {
     [Symbol.asyncIterator]: () => iterator,

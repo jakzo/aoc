@@ -3,11 +3,11 @@ import path from "path";
 
 import chalk from "chalk";
 import cheerio from "cheerio";
-import chokidar from "chokidar";
+import * as chokidar from "chokidar";
 import { formatDistanceToNowStrict } from "date-fns";
-import fse from "fs-extra";
+import * as fse from "fs-extra";
 import inquirer from "inquirer";
-import keytar from "keytar";
+import * as keytar from "keytar";
 import tempy from "tempy";
 
 import { AocTemplate, CommandBuilder } from "./templates";
@@ -104,7 +104,9 @@ export const countdownToStart = async (
   startTime = getCurrentChallengeStartTime(margin).getTime()
 ): Promise<void> =>
   new Promise<void>((resolve) => {
-    const tick = () => {
+    console.log(new Date(startTime));
+
+    const tick = (): void => {
       process.stdout.clearLine(0);
       process.stdout.cursorTo(0);
       const now = Date.now();
@@ -154,9 +156,9 @@ export const printDescription = async (
   if (partNum) {
     const partEl = partEls[partNum - 1];
     if (!partEl) throw new Error(`cannot find part ${partNum} on page`);
-    logHtml($(partEl).html());
+    logHtml($(partEl).html()!);
   } else {
-    partEls.each((i, el) => logHtml($(el).html()));
+    partEls.each((i, el) => logHtml($(el).html()!));
   }
 };
 
@@ -187,7 +189,7 @@ export const submit = async (
     .filter((i, el) => /^\s*\[.+\]\s*$/.test($(el).text()))
     .remove();
   const html = $(main)
-    .html()
+    .html()!
     .replace(/If\s+you[^]{1,8}re\s+stuck[^]+?subreddit[^]+?\.\s*/, "")
     .replace(/You\s+can[^]+?this\s+victory[^]+?\.\s*/, "");
   $(main).html(html);
@@ -223,7 +225,7 @@ export const runAndWatch = (
 
       let i = -1;
       let killed = false;
-      const runNextCommand = (code?: number) => {
+      const runNextCommand = (code?: number): void => {
         if (killed) return;
 
         if (code) {

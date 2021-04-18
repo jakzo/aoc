@@ -3,7 +3,7 @@ import path from "path";
 import axios from "axios";
 import cliHtml from "cli-html";
 import inquirer from "inquirer";
-import keytar from "keytar";
+import * as keytar from "keytar";
 
 import {
   AocTemplate,
@@ -142,7 +142,7 @@ export const validateDayAndYear = (day: number, year: number): void => {
   if (year < 2015) throw new Error("year must be 2015 or greater");
 };
 
-const getNextChallengeStart = () => {
+const getNextChallengeStart = (): Date => {
   const now = new Date();
   const curYear = now.getUTCFullYear();
   const firstChallengeOfYear = new Date(Date.UTC(curYear, 11, 1, 5, 0, 0, 0));
@@ -165,7 +165,7 @@ const getNextChallengeStart = () => {
   );
 };
 
-const getPrevChallengeStart = () => {
+const getPrevChallengeStart = (): Date => {
   const now = new Date();
   const curYear = now.getUTCFullYear();
   const firstChallengeOfYear = new Date(Date.UTC(curYear, 11, 1, 5, 0, 0, 0));

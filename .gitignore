@@ -20,8 +20,8 @@ config.gypi
 /.npmignore
 /.nvmrc
 /.yvmrc
-/jest.config.js
 /.eslintrc.js
+/.prettierrc.js
 /.eslintignore
 /.prettierignore
 /.lintstagedrc.js
@@ -30,6 +30,7 @@ config.gypi
 /.husky/.gitignore
 /tsconfig.build.json
 /tsconfig.base.json
+/jest.config.js
 # === (end generated patterns) ===
 
 dist-bin/
