@@ -1,5 +1,12 @@
 # @jakzo/aoc
 
+## 1.0.1
+
+### Patch Changes
+
+- b174da5: Internal change which shouldn't affect usage: use jstm for repo config.
+- 719015c: Fixed calculation of start time of previous year's last challenge.
+
 ## 1.0.0
 
 ### Major Changes
