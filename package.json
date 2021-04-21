@@ -18,6 +18,10 @@
   "engines": {
     "node": ">=10"
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "bin": {
     "aoc": "dist/bin.js"
   },
@@ -64,7 +68,7 @@
     "@changesets/get-release-plan": "2.0.1",
     "@changesets/release-utils": "0.1.0",
     "@jakzo/pkg": "^4.4.9",
-    "@jstm/preset-node": "0.3.4",
+    "@jstm/preset-node": "0.3.8",
     "@types/cheerio": "^0.22.22",
     "@types/fs-extra": "^9.0.4",
     "@types/inquirer": "^7.3.1",

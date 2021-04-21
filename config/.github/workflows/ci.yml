@@ -1,0 +1,50 @@
+jobs:
+  release_binaries:
+    strategy:
+      matrix:
+        arch: [x64]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            os-display-name: Linux
+            os-pkg-name: linux
+          - os: windows-latest
+            os-display-name: Windows
+            os-pkg-name: win
+          - os: macos-latest
+            os-display-name: macOS
+            os-pkg-name: macos
+
+    name: Release binary for ${{ matrix.os-display-name }}
+    needs: release
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.node_version }}
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build JavaScript
+        run: yarn build
+      - name: Build binary
+        id: build
+        shell: bash
+        run: |
+          pkg_arch="node${{ env.node_version }}-${{ matrix.os-pkg-name }}-${{ matrix.arch }}"
+          pkg_out="./dist-bin/aoc-${{ matrix.os-pkg-name }}-${{ matrix.arch }}"
+          yarn pkg -c package.json -t "$pkg_arch" -o "$pkg_out" ./dist/bin.js
+          echo "::set-output name=bin_file::$(ls -1 ./dist-bin/ | head -n1)"
+      - name: Upload binary to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release.outputs.release_upload_url }}
+          asset_path: ./dist-bin/${{ steps.build.outputs.bin_file }}
+          asset_name: ${{ steps.build.outputs.bin_file }}
+          asset_content_type: application/octet-stream

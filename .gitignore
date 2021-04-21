@@ -17,6 +17,7 @@ CVS
 ._*
 .npmrc
 config.gypi
+/.npmrc
 /.npmignore
 /.nvmrc
 /.yvmrc
