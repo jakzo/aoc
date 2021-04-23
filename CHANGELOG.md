@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.0.3
+
+### Patch Changes
+
+- b1b92a3: Updated pkg setup to use node 14 in binaries and use pkg v5 which works for native node modules instead of the fork.
+
 ## 1.0.2
 
 ### Patch Changes
