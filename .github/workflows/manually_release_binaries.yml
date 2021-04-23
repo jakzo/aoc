@@ -28,7 +28,6 @@ jobs:
             os-pkg-name: macos
 
     name: Release binary for ${{ matrix.os-display-name }}
-    needs: release
 
     runs-on: ${{ matrix.os }}
 
