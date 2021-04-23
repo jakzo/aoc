@@ -104,8 +104,6 @@ export const countdownToStart = async (
   startTime = getCurrentChallengeStartTime(margin).getTime()
 ): Promise<void> =>
   new Promise<void>((resolve) => {
-    console.log(new Date(startTime));
-
     const tick = (): void => {
       process.stdout.clearLine(0);
       process.stdout.cursorTo(0);
