@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.0.4
+
+### Patch Changes
+
+- 185fcc7: Removed debugging log accidentally displayed in countdown command.
+
 ## 1.0.3
 
 ### Patch Changes
