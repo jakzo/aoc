@@ -665,9 +665,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@jstm/core@0.3.8":
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/@jstm/core/-/core-0.3.8.tgz#572281194c8832bd84bea7dd4731099332d5ad5f"
+"@jstm/core@0.3.14":
+  version "0.3.14"
+  resolved "https://registry.yarnpkg.com/@jstm/core/-/core-0.3.14.tgz#d4ed390a58599eb8f207ba65195dd6efa27d37f8"
+  integrity sha512-Uu46hjYJcR5zL+PeUb5F3qlzPhlaGTZac0LH3wplBZKHz1oZR/oQsXNavvJzSx5qM+2wEF5sEgp87x3Y26xwEQ==
   dependencies:
     fs-extra "^9.1.0"
     golden-fleece "^1.0.9"
@@ -675,14 +676,15 @@
     tslib "^2.1.0"
     yaml "^2.0.0-5"
 
-"@jstm/preset-node@0.3.8":
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/@jstm/preset-node/-/preset-node-0.3.8.tgz#8979a35046c056f10c899e34c7168d154992be97"
+"@jstm/preset-node@0.3.14":
+  version "0.3.14"
+  resolved "https://registry.yarnpkg.com/@jstm/preset-node/-/preset-node-0.3.14.tgz#bc11d93947e29cc3eb6ececa726a3737993c65dc"
+  integrity sha512-dtB0j1NzyA9bh+soXN15DIgAgEJeuwuccCfhcRCvH/aRmNDOhtuSjAzuiaRcbh6TAU8M/dQ9o1jqnIwBpSsieg==
   dependencies:
     "@changesets/cli" "2.14.1"
     "@changesets/get-release-plan" "2.0.1"
     "@changesets/release-utils" "0.1.0"
-    "@jstm/core" "0.3.8"
+    "@jstm/core" "0.3.14"
     "@types/jest" "26.0.21"
     "@types/node" "14.14.37"
     "@typescript-eslint/eslint-plugin" "4.18.0"
