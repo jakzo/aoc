@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.0.2
+
+### Patch Changes
+
+- 98a1800: Updated to a fixed version of jstm (no change to functionality).
+
 ## 1.0.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@jakzo/aoc",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "CLI for reading, running and submitting Advent of Code challenges.",
   "keywords": [],
   "homepage": "https://github.com/jakzo/aoc#readme",
