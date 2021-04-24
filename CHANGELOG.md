@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.0.5
+
+### Patch Changes
+
+- b323258: Rerelease now that GitHub actions mac build is working.
+
 ## 1.0.4
 
 ### Patch Changes
