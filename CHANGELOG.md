@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.0.6
+
+### Patch Changes
+
+- c2edbc6: Fixed bug in node module due to templates not being included in the package.
+
 ## 1.0.5
 
 ### Patch Changes
