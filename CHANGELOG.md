@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.0.9
+
+### Patch Changes
+
+- 51a19d5: Fixed templates not being included in npm module.
+
 ## 1.0.8
 
 ### Patch Changes
