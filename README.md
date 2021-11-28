@@ -80,7 +80,37 @@ The template files exist at [./templates](./templates) with commands for the tem
 
 The tool also exposes individual commands in case you want to compose some functionality together with another tool. For example you can save the input for a challenge to another file with `aoc input --year 2016 --day 5 > another-file.txt`.
 
-Documentation for individual commands can be found by running `aoc --help`.
+Documentation for individual commands can be found by running `aoc --help`:
+
+```
+$ aoc --help
+Commands:
+  aoc                    Counts down, saves input, prints
+                         description and prompts for
+                         answers to the upcoming challenge
+                                                 [default]
+  aoc start [language]   Creates and run files from a
+                         template for a language (does not
+                         overwrite)
+  aoc login              Prompts for a new session token
+  aoc template <output>  Copies a template folder (does
+                         not overwrite)
+  aoc countdown          Counts down until the next
+                         challenge starts then exits
+  aoc description        Prints the description of a
+                         challenge
+  aoc input              Prints the input to a challenge
+  aoc submit [answer]    Submits an answer to a challenge
+  aoc leaderboard <id>   Outputs a CSV of times to
+                         completion for a private
+                         leaderboard
+
+Options:
+  -y, --year     The year of the challenge        [number]
+  -d, --day      The day of the challenge         [number]
+  -h, --help     Show help                       [boolean]
+  -v, --version  Show version number             [boolean]
+```
 
 Individual commands can also be accessed from the npm module like:
 
