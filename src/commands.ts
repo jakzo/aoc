@@ -39,7 +39,9 @@ export const main = async (
   await printDescription(year, day, part, account);
   const dir = getDirForDay(day);
   await fse.ensureDir(dir);
-  await fse.writeFile(path.join(dir, "input.txt"), await getInput(year, day));
+  const inputFile = path.join(dir, "input.txt");
+  if (!(await fse.pathExists(inputFile)))
+    await fse.writeFile(inputFile, await getInput(year, day));
   while (true) {
     while (true) {
       console.log("");
