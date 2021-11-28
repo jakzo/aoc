@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.0.7
+
+### Patch Changes
+
+- b06e241: Added custom user agent
+
 ## 1.0.6
 
 ### Patch Changes
