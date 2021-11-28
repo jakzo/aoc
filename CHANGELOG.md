@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.0.8
+
+### Patch Changes
+
+- a70bc9d: Do not download input file if it already exists.
+
 ## 1.0.7
 
 ### Patch Changes
