@@ -26,7 +26,7 @@ const templateCommands = declareTemplates({
         "-macosx_version_min",
         "10.8",
         "-no_pie",
-        "-lc",
+        "-static",
         "-o",
         path.join(ctx.tempDir, "wip"),
         path.join(ctx.tempDir, "wip.o"),

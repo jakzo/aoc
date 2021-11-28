@@ -30,7 +30,7 @@ PROT_WRITE equ 0x02
 MAP_ANON equ 0x1000
 %define mmap(addr, len, prot, flags, fd, pos) oscall 197, addr, len, prot, flags, fd, pos
 
-global _main
+global start
 
 section .text
 
@@ -82,7 +82,7 @@ write(1, rsp, rbx)
 add rsp, rbx
 %endmacro
 
-_main:
+start:
   part 1, 2020
   part 2, 30000000
   exit(0)

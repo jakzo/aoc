@@ -18,6 +18,12 @@ const BACKOFF_RATE = 1.1;
 const BACKOFF_INITIAL = 1000;
 const BACKOFF_MAX = 30000;
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const PACKAGE_JSON = require("../package.json") as {
+  version: string;
+  homepage: string;
+};
+
 export const logHtml = (html: string): void => {
   console.log(cliHtml(html).replace(/\n+$/, ""));
 };
@@ -112,6 +118,7 @@ export const makeRequest = async (
         url: `${BASE_URL}${url}`,
         method: data ? "POST" : "GET",
         headers: {
+          "User-Agent": `Mozilla/5.0 (compatible; jakzo-aoc/${PACKAGE_JSON.version}; +${PACKAGE_JSON.homepage})`,
           ...(data
             ? { "Content-Type": "application/x-www-form-urlencoded" }
             : undefined),
