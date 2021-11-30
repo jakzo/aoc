@@ -68,7 +68,7 @@ yargs
           description: "The day of the challenge",
         }),
     cliHandler(async (args) => {
-      await start(args.language as AocTemplate, args.day);
+      await start(args.language as AocTemplate, args.year, args.day);
     })
   )
   .command(
@@ -231,7 +231,7 @@ yargs
             { name: "answer", message: "Enter your answer:" },
           ])
         ).answer;
-      await submit(args.part, answer.trim(), args.day, args.year);
+      await submit(args.part, answer.trim(), args.year, args.day);
     })
   )
   .command(

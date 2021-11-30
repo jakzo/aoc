@@ -1,6 +1,7 @@
 import path from "path";
 
 import axios from "axios";
+import chalk from "chalk";
 import cliHtml from "cli-html";
 import inquirer from "inquirer";
 import * as keytar from "keytar";
@@ -28,13 +29,18 @@ export const logHtml = (html: string): void => {
   console.log(cliHtml(html).replace(/\n+$/, ""));
 };
 
-export const getCurrentDay = (): number => {
+export const getCurrentDay = (year: number): number => {
   const now = new Date();
-  if (now.getUTCMonth() !== 11)
-    throw new Error("Advent of Code has not started yet");
-  const day = now.getUTCDate();
-  if (day > 25) throw new Error("Advent of Code is over");
-  return day;
+  if (year === now.getUTCFullYear()) {
+    if (now.getUTCMonth() !== 11)
+      throw new Error("Advent of Code has not started yet");
+    const day = now.getUTCDate();
+    if (day > 25) throw new Error("Advent of Code is over");
+    return day;
+  } else {
+    console.warn(chalk.yellow("No day given. Defaulting to day 1..."));
+    return 1;
+  }
 };
 
 export const getCurrentYear = (): number => new Date().getUTCFullYear();

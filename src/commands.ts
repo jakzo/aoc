@@ -51,8 +51,8 @@ export const main = async (
       const { isCorrect, isDone } = await submit(
         part,
         answer,
-        day,
         year,
+        day,
         true,
         account
       );
@@ -76,7 +76,8 @@ export const main = async (
 
 export const start = async (
   template: AocTemplate = "js",
-  day = getCurrentDay()
+  year = getCurrentYear(),
+  day = getCurrentDay(year)
 ): Promise<chokidar.FSWatcher> => {
   const dir = getDirForDay(day);
   const normalizedTemplate = normalizeTemplate(template);
@@ -131,7 +132,7 @@ export const countdownToStart = async (
 
 export const getInput = async (
   year = getCurrentYear(),
-  day = getCurrentDay(),
+  day = getCurrentDay(year),
   account?: string
 ): Promise<string> => {
   validateDayAndYear(day, year);
@@ -143,7 +144,7 @@ export const getInput = async (
 
 export const printDescription = async (
   year = getCurrentYear(),
-  day = getCurrentDay(),
+  day = getCurrentDay(year),
   /** Part number to print or leave `undefined` to print all parts. */
   partNum?: number,
   account?: string
@@ -165,8 +166,8 @@ export const printDescription = async (
 export const submit = async (
   partNum: number,
   answer: string,
-  day = getCurrentDay(),
   year = getCurrentYear(),
+  day = getCurrentDay(year),
   logFeedback = true,
   account?: string
 ): Promise<{ isCorrect: boolean; isDone: boolean; message: string }> => {
