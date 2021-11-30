@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.0.10
+
+### Patch Changes
+
+- 51360ac: Defaults to day 1 if day not provided and other minor fixes.
+
 ## 1.0.9
 
 ### Patch Changes
