@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.0.12
+
+### Patch Changes
+
+- 063c58f: Reprompts for session token if saved one is invalid.
+
 ## 1.0.11
 
 ### Patch Changes
