@@ -15,7 +15,7 @@ import {
 export const KEYTAR_SERVICE_NAME = "jakzo-aoc";
 export const DEFAULT_ACCOUNT = "_default";
 const BASE_URL = "https://adventofcode.com";
-const BACKOFF_RATE = 1.1;
+const BACKOFF_RATE = 1.2;
 const BACKOFF_INITIAL = 1000;
 const BACKOFF_MAX = 30000;
 
@@ -110,13 +110,14 @@ export const makeRequest = async (
   token: string,
   data?: Record<string, string>
 ): Promise<string> => {
-  const timeOfLastRequest = 0;
+  let timeOfLastRequest = 0;
   let currentWait = BACKOFF_INITIAL;
   while (true) {
-    const timeSinceLastRequest = Date.now() - timeOfLastRequest;
-    if (timeSinceLastRequest < currentWait)
-      await sleep(currentWait - timeSinceLastRequest);
+    const now = Date.now();
+    const timeOfNextRequest = timeOfLastRequest + currentWait;
+    if (timeOfNextRequest > now) await sleep(timeOfNextRequest - now);
     currentWait = Math.min(currentWait * BACKOFF_RATE, BACKOFF_MAX);
+    timeOfLastRequest = now;
 
     let res: { status: number; data: Buffer };
     try {
@@ -153,6 +154,8 @@ export const makeRequest = async (
 export const validateDayAndYear = (day: number, year: number): void => {
   if (day < 1 || day > 25) throw new Error("day must be between 1 and 25");
   if (year < 2015) throw new Error("year must be 2015 or greater");
+  if (year > new Date().getUTCFullYear())
+    throw new Error("year must not be in the future");
 };
 
 const getNextChallengeStart = (): Date => {
