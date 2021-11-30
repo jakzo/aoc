@@ -136,15 +136,16 @@ export const makeRequest = async (
         data: data ? formUrlEncoded(data) : undefined,
       });
     } catch (err) {
+      const status = (err as {
+        response?: { status: number; statusText: string };
+      })?.response?.status;
+      // TODO: Prompt for session token if it's an auth error
+      if (status && status >= 300 && status < 500)
+        throw new Error(`Request failed: ${err}`);
       console.warn(`Request failed and will retry: ${err}`);
       continue;
     }
 
-    if (res.status >= 500) {
-      console.warn(`Request failed with code ${res.status}. Retrying...`);
-      continue;
-    }
-    // TODO: Prompt for session token if it's an auth error
     const responseText = res.data.toString();
     if (res.status >= 300) throw new Error(responseText);
     return responseText;
