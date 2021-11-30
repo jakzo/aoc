@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.0.11
+
+### Patch Changes
+
+- 77a94a2: Better error handling.
+
 ## 1.0.10
 
 ### Patch Changes
