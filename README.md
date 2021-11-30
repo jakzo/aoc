@@ -1,3 +1,5 @@
+# Advent of Code CLI
+
 Full Advent of Code dev loop in a CLI which:
 
 - Prints challenge description in the terminal
