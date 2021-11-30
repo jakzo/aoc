@@ -88,6 +88,13 @@ export const getSessionToken = async (
     return token;
   }
 
+  return getNewSessionToken(account, verifyToken);
+};
+
+export const getNewSessionToken = async (
+  account = DEFAULT_ACCOUNT,
+  verifyToken = false
+): Promise<string> => {
   const inputToken = await promptForToken(verifyToken);
   await keytar.setPassword(KEYTAR_SERVICE_NAME, account, inputToken);
   return inputToken;
@@ -136,12 +143,33 @@ export const makeRequest = async (
         data: data ? formUrlEncoded(data) : undefined,
       });
     } catch (err) {
-      const status = (err as {
-        response?: { status: number; statusText: string };
-      })?.response?.status;
-      // TODO: Prompt for session token if it's an auth error
-      if (status && status >= 300 && status < 500)
+      const response = (err as {
+        response?: {
+          status: number;
+          statusText: string;
+          headers: { "set-cookie"?: string[] };
+        };
+      })?.response;
+      if (
+        response &&
+        response.status &&
+        response.status >= 300 &&
+        response.status < 500
+      ) {
+        if (
+          response.status === 401 ||
+          (response.status === 400 &&
+            token &&
+            response.headers["set-cookie"]?.some((value) =>
+              value.startsWith("session=;")
+            ))
+        ) {
+          // TODO: Use appropriate account
+          token = await getNewSessionToken();
+          continue;
+        }
         throw new Error(`Request failed: ${err}`);
+      }
       console.warn(`Request failed and will retry: ${err}`);
       continue;
     }
