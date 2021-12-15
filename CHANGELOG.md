@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.1.0
+
+### Minor Changes
+
+- 6e79ecd: Local language templates can now be used.
+
 ## 1.0.12
 
 ### Patch Changes
