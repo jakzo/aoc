@@ -14,7 +14,6 @@ import {
   start,
   submit,
 } from "./commands";
-import { AocTemplate, AocTemplateBuiltin, builtinTemplates } from "./templates";
 import { normalizeTemplate } from "./utils";
 
 const readStdin = async (): Promise<string> => {
@@ -59,8 +58,8 @@ yargs
       yargs
         .positional("language", {
           type: "string",
-          choices: Object.keys(builtinTemplates),
-          description: "Name of built-in language template",
+          description:
+            "Name of built-in language template or path to local template folder",
         })
         .option("day", {
           alias: "d",
@@ -68,7 +67,7 @@ yargs
           description: "The day of the challenge",
         }),
     cliHandler(async (args) => {
-      await start(args.language as AocTemplate, args.year, args.day);
+      await start(args.language, args.year, args.day);
     })
   )
   .command(
@@ -96,18 +95,20 @@ yargs
         .option("language", {
           alias: "l",
           type: "string",
-          choices: Object.keys(builtinTemplates),
           description: "Name of built-in language template",
         }),
-    cliHandler(async (args) =>
-      copyTemplates(
+    cliHandler(async (args) => {
+      if (!args.template && !args.language)
+        throw new Error(
+          "Either the 'template' or 'language' option must be set"
+        );
+      await copyTemplates(
         args.output,
         args.template
           ? args.template
-          : normalizeTemplate((args.language as AocTemplateBuiltin) || "js")
-              .path
-      )
-    )
+          : (await normalizeTemplate(args.language!)).path
+      );
+    })
   )
   .command(
     "countdown",

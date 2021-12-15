@@ -52,13 +52,13 @@ const templateCommands = declareTemplates({
   ],
 });
 
-export interface CommandBuilder {
-  (ctx: { tempDir: string }): {
-    command: string;
-    args?: string[];
-    cwd?: string;
-  }[];
-}
+export type CommandBuilder = (ctx: {
+  tempDir: string;
+}) => {
+  command: string;
+  args?: string[];
+  cwd?: string;
+}[];
 
 export interface AocTemplateNormalized {
   path: string;

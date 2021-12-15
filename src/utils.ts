@@ -3,17 +3,21 @@ import path from "path";
 import axios from "axios";
 import chalk from "chalk";
 import cliHtml from "cli-html";
+import * as fse from "fs-extra";
 import inquirer from "inquirer";
 import * as keytar from "keytar";
+import stringArgv from "string-argv";
 
 import {
   AocTemplate,
+  AocTemplateBuiltin,
   AocTemplateNormalized,
   builtinTemplates,
 } from "./templates";
 
 export const KEYTAR_SERVICE_NAME = "jakzo-aoc";
 export const DEFAULT_ACCOUNT = "_default";
+export const TEMPLATE_JSON = "aoc.json";
 const BASE_URL = "https://adventofcode.com";
 const BACKOFF_RATE = 1.2;
 const BACKOFF_INITIAL = 1000;
@@ -244,17 +248,45 @@ export const getCurrentChallengeStartTime = (
 export const getChallengeStartTime = (year: number, day: number): Date =>
   new Date(Date.UTC(year, 11, day, 5, 0, 0, 0));
 
-export const normalizeTemplate = (
-  template: AocTemplate
-): AocTemplateNormalized => {
+export const normalizeTemplate = async (
+  template: AocTemplate | string
+): Promise<AocTemplateNormalized> => {
   if (typeof template === "string") {
-    if (!builtinTemplates[template]) {
-      throw new Error(`built-in template '${template}' does not exist`);
+    if (Object.prototype.hasOwnProperty.call(builtinTemplates, template))
+      return builtinTemplates[template as AocTemplateBuiltin];
+    const localTemplatePath = path.resolve(template);
+    const localJsonPath = path.join(localTemplatePath, TEMPLATE_JSON);
+    const localJson = (await fse.readJson(localJsonPath).catch((err) => {
+      if ((err as { code?: string })?.code !== "ENOENT") throw err;
+    })) as { commands: string[] } | undefined;
+    if (localJson !== undefined) {
+      if (!Array.isArray(localJson?.commands))
+        throw new Error(`Template has no commands at '${localJsonPath}'`);
+      return {
+        path: localTemplatePath,
+        commandBuilder: ({ tempDir }) =>
+          localJson.commands.map((cmd) => {
+            const [command, ...args] = stringArgv(
+              cmd.replace(/\{\{TEMP_DIR\}\}/g, tempDir)
+            );
+            return { command, args };
+          }),
+        files: await getLocalTemplateFiles(localTemplatePath),
+      };
     }
-    return builtinTemplates[template];
+    throw new Error(
+      `built-in template '${template}' does not exist, nor does '${localJsonPath}'`
+    );
   }
 
   return template;
+};
+
+export const getLocalTemplateFiles = async (
+  templateDir: string
+): Promise<string[]> => {
+  const allFiles = await fse.readdir(templateDir);
+  return allFiles.filter((name) => name !== TEMPLATE_JSON);
 };
 
 export const buildCommand = (command: string, srcPath: string): string => {

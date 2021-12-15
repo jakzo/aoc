@@ -76,7 +76,22 @@ Or if you prefer you can install the binary for your platform:
 
 See [./templates](./templates) for a list of possible languages. Each folder name is a valid argument you can provide to `aoc start`.
 
-The template files exist at [./templates](./templates) with commands for the template within [./src/templates.ts](./src/templates.ts).
+You can also create local templates so you can use languages not built-in to this tool. To do this:
+
+1. Create a folder containing your template files
+1. Make sure the source file(s) contain `wip` (case-insensitive) in their filename
+   - This is how the tool determines which files to save after a successful submission
+1. Create an `aoc.json` file in this directory to specify commands
+   - These commands will be rerun on changes
+   - Use `{{TEMP_DIR}}` to insert the path of a temporary directory for saving build output
+   - Example `aoc.json` which compiles and runs the code in `wip.c`:
+     ```json
+     {
+       "commands": ["clang -o '{{TEMP_DIR}}/wip' wip.c", "'{{TEMP_DIR}}/wip'"]
+     }
+     ```
+1. Use your local template by passing in the path to your template folder instead of the language name
+   - Example: `aoc start ./my-template-folder`
 
 ## Individual Commands
 

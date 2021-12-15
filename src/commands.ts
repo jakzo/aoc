@@ -10,7 +10,7 @@ import inquirer from "inquirer";
 import * as keytar from "keytar";
 import tempy from "tempy";
 
-import { AocTemplate, CommandBuilder } from "./templates";
+import { CommandBuilder } from "./templates";
 import {
   DEFAULT_ACCOUNT,
   KEYTAR_SERVICE_NAME,
@@ -19,6 +19,7 @@ import {
   getCurrentDay,
   getCurrentYear,
   getDirForDay,
+  getLocalTemplateFiles,
   getSessionToken,
   logHtml,
   makeRequest,
@@ -75,12 +76,12 @@ export const main = async (
 };
 
 export const start = async (
-  template: AocTemplate = "js",
+  templateNameOrPath = "js",
   year = getCurrentYear(),
   day = getCurrentDay(year)
 ): Promise<chokidar.FSWatcher> => {
   const dir = getDirForDay(day);
-  const normalizedTemplate = normalizeTemplate(template);
+  const normalizedTemplate = await normalizeTemplate(templateNameOrPath);
   await copyTemplates(dir, normalizedTemplate.path);
   return runAndWatch(
     normalizedTemplate.commandBuilder,
@@ -98,7 +99,11 @@ export const copyTemplates = async (
   outputPath: string,
   templatePath: string
 ): Promise<void> => {
-  await fse.copy(templatePath, outputPath, { overwrite: false });
+  for (const name of await getLocalTemplateFiles(templatePath)) {
+    await fse.copy(path.join(templatePath, name), path.join(outputPath, name), {
+      overwrite: false,
+    });
+  }
 };
 
 // TODO: Synchronize with AoC time
