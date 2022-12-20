@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.2.0
+
+### Minor Changes
+
+- a415f39: Saves sample input to file now.
+
 ## 1.1.0
 
 ### Minor Changes
