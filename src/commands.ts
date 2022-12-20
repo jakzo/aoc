@@ -37,12 +37,17 @@ export const main = async (
   await countdownToStart(undefined, getChallengeStartTime(year, day).getTime());
   // TODO: Continue to part 2 if part 1 is already completed
   let part = 1;
-  await printDescription(year, day, part, account);
+  const desc = await printDescription(year, day, part, account);
   const dir = getDirForDay(day);
   await fse.ensureDir(dir);
   const inputFile = path.join(dir, "input.txt");
   if (!(await fse.pathExists(inputFile)))
     await fse.writeFile(inputFile, await getInput(year, day));
+  const inputSampleFile = path.join(dir, "input-sample.txt");
+  if (!(await fse.pathExists(inputSampleFile))) {
+    const sampleInput = readSampleInput(...desc);
+    if (sampleInput) await fse.writeFile(inputSampleFile, sampleInput);
+  }
   while (true) {
     while (true) {
       console.log("");
@@ -147,18 +152,30 @@ export const getInput = async (
   );
 };
 
+export const getSampleInput = async (
+  year = getCurrentYear(),
+  day = getCurrentDay(year),
+  account?: string
+): Promise<string | undefined> =>
+  readSampleInput(...(await fetchDescriptionParts(year, day, account)));
+
+const readSampleInput = (
+  $: cheerio.Root,
+  partEls: cheerio.Cheerio
+): string | undefined => {
+  const sampleInput = $(partEls[0]).find("pre").first();
+  if (!sampleInput) return undefined;
+  return $(sampleInput).text();
+};
+
 export const printDescription = async (
   year = getCurrentYear(),
   day = getCurrentDay(year),
   /** Part number to print or leave `undefined` to print all parts. */
   partNum?: number,
   account?: string
-): Promise<void> => {
-  validateDayAndYear(day, year);
-  const $ = cheerio.load(
-    await makeRequest(`/${year}/day/${day}`, await getSessionToken(account))
-  );
-  const partEls = $(".day-desc");
+): Promise<[cheerio.Root, cheerio.Cheerio]> => {
+  const [$, partEls] = await fetchDescriptionParts(year, day, account);
   if (partNum) {
     const partEl = partEls[partNum - 1];
     if (!partEl) throw new Error(`cannot find part ${partNum} on page`);
@@ -166,6 +183,19 @@ export const printDescription = async (
   } else {
     partEls.each((i, el) => logHtml($(el).html()!));
   }
+  return [$, partEls];
+};
+
+const fetchDescriptionParts = async (
+  year = getCurrentYear(),
+  day = getCurrentDay(year),
+  account?: string
+): Promise<[cheerio.Root, cheerio.Cheerio]> => {
+  validateDayAndYear(day, year);
+  const $ = cheerio.load(
+    await makeRequest(`/${year}/day/${day}`, await getSessionToken(account))
+  );
+  return [$, $(".day-desc")];
 };
 
 export const submit = async (
