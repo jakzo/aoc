@@ -157,7 +157,9 @@ yargs
             "Print the description of a specific challenge",
           ],
         ]),
-    cliHandler(async (args) => printDescription(args.year, args.day, args.part))
+    cliHandler(async (args) => {
+      await printDescription(args.year, args.day, args.part);
+    })
   )
   .command(
     "input",
