@@ -12,7 +12,7 @@ on:
       - "*"
 
 env:
-  node_version: 14
+  node_version: 20
 
 jobs:
   test:
