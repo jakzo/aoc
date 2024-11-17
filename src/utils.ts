@@ -25,6 +25,7 @@ const BACKOFF_MAX = 30000;
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const PACKAGE_JSON = require("../package.json") as {
+  name: string;
   version: string;
   homepage: string;
 };
@@ -136,7 +137,9 @@ export const makeRequest = async (
         url: `${BASE_URL}${url}`,
         method: data ? "POST" : "GET",
         headers: {
-          "User-Agent": `Mozilla/5.0 (compatible; jakzo-aoc/${PACKAGE_JSON.version}; +${PACKAGE_JSON.homepage})`,
+          "User-Agent": `Mozilla/5.0 (compatible; ${PACKAGE_JSON.name}:${
+            PACKAGE_JSON.version
+          }; +${PACKAGE_JSON.homepage.replace(/#.+/, "")})`,
           ...(data
             ? { "Content-Type": "application/x-www-form-urlencoded" }
             : undefined),
