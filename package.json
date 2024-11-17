@@ -51,18 +51,18 @@
     "build:binary": "pkg -c package.json -t node14-linux-x64,node14-macos-x64,node14-win-x64 -o dist-bin/aoc ./dist/bin.js"
   },
   "dependencies": {
-    "axios": "^0.21.0",
+    "axios": "0.21.1",
     "chalk": "4.1.0",
-    "cheerio": "^1.0.0-rc.3",
-    "chokidar": "^3.4.3",
+    "cheerio": "1.0.0-rc.6",
+    "chokidar": "3.5.1",
     "cli-html": "jakzo/cli-html",
-    "date-fns": "^2.16.1",
-    "fs-extra": "^9.0.1",
-    "inquirer": "^7.3.3",
-    "keytar": "^7.3.0",
-    "string-argv": "^0.3.1",
-    "tempy": "^1.0.0",
-    "yargs": "^16.1.1"
+    "date-fns": "2.21.1",
+    "fs-extra": "9.1.0",
+    "inquirer": "7.3.3",
+    "keytar": "7.6.0",
+    "string-argv": "0.3.1",
+    "tempy": "1.0.1",
+    "yargs": "16.2.0"
   },
   "devDependencies": {
     "@changesets/cli": "2.14.1",
