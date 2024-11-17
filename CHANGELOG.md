@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.3.0
+
+### Minor Changes
+
+- e576257: Fixed dependency issue and minor change to user agent.
+
 ## 1.2.0
 
 ### Minor Changes
