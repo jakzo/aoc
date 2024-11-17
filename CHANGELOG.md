@@ -1,5 +1,11 @@
 # @jakzo/aoc
 
+## 1.3.1
+
+### Patch Changes
+
+- 3db13dd: Attempt to fix dependency versions.
+
 ## 1.3.0
 
 ### Minor Changes
